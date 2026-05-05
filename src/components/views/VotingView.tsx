@@ -16,8 +16,10 @@ interface Props {
 export function VotingView({ room, myId, privateInfo, castVotes, myVote, onVote }: Props) {
   const { state } = room;
   const activePlayers = state.players.filter((p) => !p.isEliminated);
-  const votesCast = state.voteCount;
   const totalVoters = activePlayers.length;
+  // Usa castVotes (atualizado via evento em tempo real) em vez de state.voteCount
+  // que só é atualizado pelo servidor quando todos já votaram
+  const votesCast = Object.keys(castVotes).length;
 
   return (
     <div className="space-y-4 fade-in">

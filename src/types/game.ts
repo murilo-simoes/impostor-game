@@ -74,8 +74,8 @@ export type PlayerInfo =
 export interface GameSettings {
   mode: GameMode;
   impostorCount: 1 | 2;
+  rounds: number; // 1-5, how many full cycles everyone speaks
   difficulty?: Difficulty;
-  roundTime?: number; // seconds per round, 0 = no timer
 }
 
 export interface GameState {

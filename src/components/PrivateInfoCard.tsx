@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type { PlayerPrivateInfo, PlayerInfo } from "@/types/game";
 
 function renderInfo(info: PlayerInfo) {
@@ -121,7 +120,6 @@ function InfoField({ label, value }: { label: string; value: string }) {
 }
 
 export function PrivateInfoCard({ privateInfo }: { privateInfo: PlayerPrivateInfo }) {
-  const [revealed, setRevealed] = useState(false);
   const isImpostor = privateInfo.role === "impostor";
 
   return (
@@ -133,45 +131,27 @@ export function PrivateInfoCard({ privateInfo }: { privateInfo: PlayerPrivateInf
           boxShadow: isImpostor ? "0 0 20px rgba(239,68,68,0.2)" : "0 0 20px var(--accent-glow)",
         }}
       >
-        <div className="flex items-center justify-between">
-          <span
-            className="badge text-sm"
-            style={{
-              background: isImpostor ? "rgba(239,68,68,0.2)" : "rgba(124,58,237,0.2)",
-              color: isImpostor ? "var(--danger)" : "var(--accent-light)",
-            }}
-          >
-            {isImpostor ? "IMPOSTOR" : "JOGADOR"}
-          </span>
-          {!revealed && (
-            <button
-              onClick={() => setRevealed(true)}
-              className="btn-primary text-sm py-1.5 px-4"
-            >
-              Revelar info
-            </button>
-          )}
-        </div>
+        <span
+          className="badge text-sm"
+          style={{
+            background: isImpostor ? "rgba(239,68,68,0.2)" : "rgba(124,58,237,0.2)",
+            color: isImpostor ? "var(--danger)" : "var(--accent-light)",
+          }}
+        >
+          {isImpostor ? "IMPOSTOR" : "JOGADOR"}
+        </span>
 
-        {revealed ? (
-          <>
-            <div className="py-2">{renderInfo(privateInfo.info)}</div>
-            {isImpostor && privateInfo.hint && (
-              <div
-                className="p-3 rounded-xl text-sm"
-                style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)" }}
-              >
-                <p className="font-semibold mb-1" style={{ color: "var(--warning)" }}>
-                  Dica de emergência (use se falar primeiro)
-                </p>
-                <p className="opacity-80">{privateInfo.hint}</p>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="py-6 text-center opacity-40">
-            <p className="text-4xl mb-2">🔒</p>
-            <p className="text-sm">Toque para revelar suas informações secretas</p>
+        <div className="py-1">{renderInfo(privateInfo.info)}</div>
+
+        {isImpostor && privateInfo.hint && (
+          <div
+            className="p-3 rounded-xl text-sm"
+            style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)" }}
+          >
+            <p className="font-semibold mb-1" style={{ color: "var(--warning)" }}>
+              Dica (caso você fale primeiro)
+            </p>
+            <p className="opacity-80">{privateInfo.hint}</p>
           </div>
         )}
       </div>

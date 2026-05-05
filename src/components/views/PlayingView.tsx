@@ -20,6 +20,9 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
   const isMyTurn = currentPlayerId === myId;
   const isHost = room.hostId === myId;
 
+  const totalRounds = state.settings.rounds ?? 1;
+  const isMultiRound = totalRounds > 1;
+
   return (
     <div className="space-y-4 fade-in">
       <div className="card p-4">
@@ -28,9 +31,19 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
             <ModeIcon mode={state.settings.mode} />
             {modeLabels[state.settings.mode]}
           </span>
-          <span className="text-sm opacity-50">
-            {state.currentTurn + 1}/{activeOrder.length}
-          </span>
+          <div className="flex items-center gap-2">
+            {isMultiRound && (
+              <span
+                className="badge text-xs"
+                style={{ background: "rgba(124,58,237,0.2)", color: "var(--accent-light)" }}
+              >
+                Rodada {state.roundNumber}/{totalRounds}
+              </span>
+            )}
+            <span className="text-sm opacity-50">
+              {state.currentTurn + 1}/{activeOrder.length}
+            </span>
+          </div>
         </div>
 
         <div className="mt-3 text-center">

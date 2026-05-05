@@ -47,7 +47,7 @@ export function createRoom(hostId: string, hostName: string): Room {
     hostId,
     state: {
       phase: "lobby",
-      settings: { mode: "secret-word", impostorCount: 1 },
+      settings: { mode: "secret-word", impostorCount: 1, rounds: 2 },
       players: [host],
       turnOrder: [],
       currentTurn: 0,
@@ -255,11 +255,16 @@ export function advanceTurn(room: Room): void {
   const activePlayers = room.state.players.filter((p) => !p.isEliminated);
   const activeIds = new Set(activePlayers.map((p) => p.id));
   const activeTurnOrder = room.state.turnOrder.filter((id) => activeIds.has(id));
+  const totalRounds = room.state.settings.rounds ?? 1;
 
   const next = room.state.currentTurn + 1;
   if (next >= activeTurnOrder.length) {
-    room.state.phase = "voting";
-    room.state.currentTurn = 0;
+    if (room.state.roundNumber >= totalRounds) {
+      room.state.phase = "voting";
+    } else {
+      room.state.roundNumber += 1;
+      room.state.currentTurn = 0;
+    }
   } else {
     room.state.currentTurn = next;
   }

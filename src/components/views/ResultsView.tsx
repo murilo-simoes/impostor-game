@@ -15,6 +15,7 @@ interface Props {
 export function ResultsView({ room, myId, privateInfo, voteResults, onPlayAgain, onNewGame }: Props) {
   const isHost = room.hostId === myId;
   const caught = voteResults?.impostorsCaught;
+  const isTie = voteResults !== null && voteResults.eliminated === null;
   const eliminated = voteResults?.eliminated
     ? room.state.players.find((p) => p.id === voteResults.eliminated)
     : null;
@@ -35,13 +36,15 @@ export function ResultsView({ room, myId, privateInfo, voteResults, onPlayAgain,
         <p className="text-2xl font-bold">
           {caught ? "Impostor descoberto!" : "O impostor escapou!"}
         </p>
-        {eliminated ? (
+        {isTie ? (
+          <p className="text-sm mt-2 font-semibold" style={{ color: "var(--danger)" }}>
+            Empate nos votos — o impostor vence!
+          </p>
+        ) : eliminated ? (
           <p className="text-sm opacity-60 mt-2">
             <span className="font-semibold">{eliminated.name}</span> foi eliminado
           </p>
-        ) : (
-          <p className="text-sm opacity-60 mt-2">Empate — ninguém foi eliminado</p>
-        )}
+        ) : null}
       </div>
 
       <div className="card p-4">

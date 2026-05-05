@@ -121,6 +121,7 @@ export function initSocketServer(io: SocketIOServer<ClientToServerEvents, Server
 
       castVote(room, socket.id, targetId);
       io.to(room.code).emit("vote:cast", socket.id, targetId);
+      broadcastRoom(room); // atualiza voteCount para todos em tempo real
 
       // Auto-resolve when all active players voted
       const activePlayers = room.state.players.filter((p) => !p.isEliminated);

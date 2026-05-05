@@ -30,6 +30,7 @@ interface Props {
 export function GameSettingsPanel({ playerCount, onStart }: Props) {
   const [mode, setMode] = useState<GameMode>("secret-word");
   const [impostorCount, setImpostorCount] = useState<1 | 2>(1);
+  const [rounds, setRounds] = useState(2);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const canStart = playerCount >= 3;
@@ -95,6 +96,30 @@ export function GameSettingsPanel({ playerCount, onStart }: Props) {
         )}
       </div>
 
+      <div>
+        <p className="text-sm opacity-60 mb-3 font-medium">Rodadas</p>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button
+              key={n}
+              onClick={() => setRounds(n)}
+              className="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all"
+              style={{
+                background: rounds === n ? "var(--accent)" : "var(--card)",
+                color: rounds === n ? "white" : undefined,
+                border: `1px solid ${rounds === n ? "var(--accent)" : "var(--card-border)"}`,
+                cursor: "pointer",
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs opacity-40 mt-2">
+          Cada jogador fala {rounds}x — total de {rounds * playerCount} falas
+        </p>
+      </div>
+
       {mode === "movie-series" && (
         <div>
           <p className="text-sm opacity-60 mb-3 font-medium">Dificuldade</p>
@@ -122,7 +147,7 @@ export function GameSettingsPanel({ playerCount, onStart }: Props) {
       )}
 
       <button
-        onClick={() => onStart({ mode, impostorCount, difficulty })}
+        onClick={() => onStart({ mode, impostorCount, rounds, difficulty })}
         disabled={!canStart}
         className="btn-primary w-full text-base py-3"
       >

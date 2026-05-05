@@ -458,14 +458,270 @@ export const MOVIES_SERIES = [
   },
 ];
 
+// Hints por palavra — formato: "está relacionado a [X]"
+const WORD_HINTS: Record<string, string> = {
+  // Objetos cotidianos
+  "Geladeira": "eletrodomésticos usados na cozinha",
+  "Guarda-chuva": "acessórios usados em dias de chuva",
+  "Mochila": "bolsas e acessórios para carregar coisas",
+  "Colchão": "móveis e itens para dormir",
+  "Ventilador": "eletrodomésticos que controlam temperatura",
+  "Escova de dente": "higiene pessoal e cuidados bucais",
+  "Garrafa térmica": "utensílios para conservar bebidas",
+  "Travesseiro": "itens de cama e conforto para dormir",
+  "Relógio": "acessórios para medir ou decorar",
+  "Óculos": "acessórios para visão ou proteção",
+  "Carteira": "acessórios pessoais para guardar documentos",
+  "Chave": "objetos usados para abrir ou travar coisas",
+  "Caneta": "material escolar e de escritório",
+  "Tesoura": "ferramentas de corte e material escolar",
+  "Espelho": "objetos domésticos de reflexo",
+  "Vela": "objetos de iluminação ou decoração",
+  "Corda": "ferramentas e equipamentos de amarração",
+  "Régua": "material escolar e de desenho técnico",
+  "Mapa": "ferramentas de navegação e orientação",
+  "Bússola": "instrumentos de orientação e exploração",
+  // Animais
+  "Elefante": "animais selvagens de grande porte",
+  "Golfinho": "animais marinhos inteligentes",
+  "Pinguim": "aves de clima frio que não voam",
+  "Cobra": "répteis peçonhentos ou não",
+  "Águia": "aves de rapina e voo alto",
+  "Tartaruga": "répteis de casco e vida longa",
+  "Polvo": "animais marinhos com muitos tentáculos",
+  "Camelo": "animais adaptados ao deserto",
+  "Gorila": "primatas de grande porte da selva",
+  "Flamingo": "aves cor-de-rosa de pernas longas",
+  "Urso polar": "animais carnívoros do Ártico",
+  "Tubarão": "predadores marinhos de grande porte",
+  "Panda": "animais ameaçados e muito famosos em zoológicos",
+  "Leão": "felinos predadores da savana africana",
+  "Tigre": "felinos listrados de grande porte",
+  "Baleia": "mamíferos marinhos gigantes",
+  "Coruja": "aves noturnas símbolo de sabedoria",
+  "Raposa": "canídeos astutos das florestas",
+  "Lobo": "canídeos selvagens que vivem em alcateia",
+  "Macaco": "primatas ágeis das florestas tropicais",
+  // Alimentos
+  "Pizza": "pratos redondos da culinária italiana",
+  "Sorvete": "sobremesas geladas e cremosas",
+  "Chocolate": "doces feitos de cacau",
+  "Hambúrguer": "lanches de fast food com carne",
+  "Sushi": "pratos da culinária japonesa com peixe cru",
+  "Pastel": "salgados fritos de massa fina",
+  "Coxinha": "salgados fritos típicos do Brasil",
+  "Macarrão": "massas da culinária italiana",
+  "Queijo": "laticínios fermentados e envelhecidos",
+  "Mel": "alimentos naturais produzidos por abelhas",
+  "Pipoca": "lanches de milho estourado",
+  "Tapioca": "pratos típicos brasileiros feitos de mandioca",
+  "Bolo": "doces assados para festas e comemorações",
+  "Brigadeiro": "doces brasileiros de chocolate condensado",
+  "Mousse": "sobremesas aeradas e cremosas",
+  "Churros": "doces fritos de massa crocante",
+  "Croissant": "pães amanteigados da confeitaria francesa",
+  "Ramen": "sopas japonesas de macarrão",
+  "Lasanha": "massas em camadas da culinária italiana",
+  "Paçoca": "doces brasileiros feitos de amendoim",
+  // Tecnologia
+  "Computador": "equipamentos eletrônicos de processamento",
+  "Celular": "dispositivos móveis de comunicação",
+  "Fone de ouvido": "acessórios eletrônicos para ouvir áudio",
+  "Câmera": "equipamentos de fotografia e filmagem",
+  "Drone": "aeronaves controladas remotamente",
+  "Impressora": "equipamentos de escritório para imprimir",
+  "Teclado": "periféricos de computador ou instrumentos musicais",
+  "Mouse": "periféricos de informática",
+  "Tablet": "dispositivos eletrônicos touchscreen portáteis",
+  "Microfone": "equipamentos de captação de som",
+  "Alto-falante": "equipamentos que reproduzem som",
+  "Carregador": "acessórios para recarregar eletrônicos",
+  // Natureza
+  "Vulcão": "formações geológicas com lava e magma",
+  "Cachoeira": "quedas d'água na natureza",
+  "Deserto": "biomas secos com pouca chuva e muita areia",
+  "Iceberg": "blocos de gelo gigantes que flutuam no oceano",
+  "Floresta": "biomas de vegetação densa com muitas árvores",
+  "Coral": "estruturas naturais subaquáticas coloridas",
+  "Furacão": "tempestades tropicais gigantes e destrutivas",
+  "Aurora boreal": "fenômenos luminosos no céu noturno polar",
+  "Gêiser": "fontes naturais de água quente que espiram",
+  "Caverna": "formações subterrâneas naturais ou artificiais",
+  "Penhasco": "formações rochosas altas e íngremes",
+  "Lago": "corpos d'água interiores cercados de terra",
+  "Nevoeiro": "fenômenos climáticos de névoa densa",
+  "Avalanche": "desastres naturais de neve ou pedras deslizando",
+  "Redemoinho": "movimentos circulares de água ou vento",
+  "Relâmpago": "descargas elétricas durante tempestades",
+  "Arco-íris": "fenômenos ópticos coloridos após a chuva",
+  // Transporte
+  "Submarino": "veículos militares ou científicos que navegam submersos",
+  "Foguete": "veículos que viajam para o espaço",
+  "Helicóptero": "aeronaves com hélices que pousam verticalmente",
+  "Navio": "embarcações grandes que cruzam oceanos",
+  "Trem bala": "trens de altíssima velocidade",
+  "Teleférico": "transporte suspenso usado em montanhas",
+  "Moto aquática": "veículos motorizados para esportes aquáticos",
+  "Planador": "aeronaves sem motor que planam no vento",
+  "Zeppelin": "aeronaves históricas em formato de balão gigante",
+  "Bicicleta": "veículos de pedal para transporte ou esporte",
+  "Trator": "máquinas pesadas usadas na agricultura",
+  "Ambulância": "veículos de emergência para atendimento médico",
+  // Lugares
+  "Biblioteca": "locais públicos cheios de livros",
+  "Castelo": "construções medievais de pedra com torres",
+  "Farol": "estruturas litorâneas que guiam embarcações",
+  "Pirâmide": "monumentos históricos do Egito antigo",
+  "Iglu": "construções de gelo usadas em regiões árticas",
+  "Bunker": "abrigos subterrâneos de proteção militar",
+  "Observatório": "instalações científicas para estudar o céu",
+  "Labirinto": "estruturas com caminhos confusos e enganosos",
+  "Cemitério": "locais de sepultamento e memória",
+  "Aquário": "instalações com tanques de animais marinhos",
+  "Museu": "locais culturais que guardam objetos históricos",
+  "Circo": "espetáculos itinerantes com acrobacias e palhaços",
+  // Esportes e lazer
+  "Paraquedas": "esportes radicais de queda livre do céu",
+  "Skate": "esportes urbanos com prancha e rodas",
+  "Escalada": "esportes de aventura em rochas ou paredes",
+  "Mergulho": "esportes aquáticos abaixo da superfície",
+  "Arco e flecha": "esportes ou armas históricas de precisão",
+  "Xadrez": "jogos de tabuleiro e estratégia mental",
+  "Boliche": "esportes de arremessar bola em pinos",
+  "Golfe": "esportes de campo com tacos e buracos",
+  "Surfe": "esportes aquáticos em ondas do mar",
+  "Parkour": "esportes urbanos de acrobacias em obstáculos",
+  // Objetos temáticos
+  "Bisturi": "instrumentos médicos usados em cirurgias",
+  "Martelo": "ferramentas de construção e carpintaria",
+  "Pincel": "utensílios artísticos para pintura",
+  "Violino": "instrumentos musicais de cordas",
+  "Troféu": "prêmios de competições e conquistas",
+  "Diploma": "documentos de formação acadêmica",
+  "Passaporte": "documentos oficiais para viagens internacionais",
+  "Bilhete": "documentos ou ingressos para transporte e eventos",
+  "Moeda": "dinheiro físico e objetos de coleção",
+  // Conceitos abstratos
+  "Segredo": "conceitos de mistério e informação oculta",
+  "Sonho": "experiências da mente durante o sono ou desejos",
+  "Memória": "conceitos de lembrança e passado",
+  "Silêncio": "conceitos de ausência de som",
+  "Sombra": "fenômenos de luz e escuridão",
+  "Eco": "fenômenos sonoros de reverberação",
+};
+
+// Hints por pergunta — tema geral sem revelar a pergunta
+const QUESTION_HINTS: Record<string, string> = {
+  "Qual é o seu maior medo?": "medos e fobias pessoais",
+  "Se você pudesse ser qualquer animal, qual seria?": "escolhas hipotéticas envolvendo animais",
+  "O que você faria com um milhão de reais?": "o que faria com muito dinheiro",
+  "Qual seria a sua última refeição?": "comida e preferências gastronômicas",
+  "O que você nunca faria por dinheiro?": "limites pessoais e valores morais",
+  "Qual é a coisa mais corajosa que você já fez?": "coragem e atitudes marcantes do passado",
+  "Se você pudesse voltar no tempo, para quando iria?": "viagem no tempo e momentos do passado",
+  "O que você faria no seu último dia na Terra?": "prioridades de vida e o que mais importa",
+  "Qual é a coisa que você mais se arrepende de não ter feito?": "arrependimentos e oportunidades perdidas",
+  "Se você fosse um personagem de filme, quem seria?": "identificação com personagens fictícios",
+  "O que você faria se soubesse que não ia falhar?": "sonhos e ambições sem medo do fracasso",
+  "Qual seria o seu superpoder ideal?": "superpoderes e habilidades fantásticas",
+  "Se você pudesse morar em qualquer lugar do mundo, onde seria?": "lugares do mundo e estilo de vida ideal",
+  "O que você nunca vai esquecer na sua vida?": "memórias marcantes e inesquecíveis",
+  "Se você pudesse mudar uma coisa no mundo, o que mudaria?": "mudanças no mundo e valores sociais",
+  "Qual é a pior decisão que você já tomou?": "erros e más decisões do passado",
+  "O que te faz levantar da cama de manhã?": "motivações e o que te move na vida",
+  "Se você tivesse que largar tudo e recomeçar, o que faria?": "recomeçar a vida do zero",
+  "Qual é o seu talento escondido?": "habilidades secretas e talentos pouco conhecidos",
+  "O que as pessoas geralmente se surpreendem ao descobrir sobre você?": "características surpreendentes da personalidade",
+  "Você prefere ser rico e infeliz ou pobre e feliz?": "dilemas entre dinheiro e felicidade",
+  "Se pudesse ser imortal, aceitaria?": "imortalidade e o sentido da vida",
+  "Você salvaria um estranho ou seu animal de estimação?": "dilemas morais difíceis de escolher",
+  "Prefere saber como vai morrer ou quando vai morrer?": "conhecimento sobre o próprio destino",
+  "Se todos os seus erros fossem públicos, você viveria diferente?": "julgamento alheio e autenticidade",
+  "Você prefere ter muitos amigos superficiais ou poucos amigos de verdade?": "amizade e qualidade dos relacionamentos",
+  "O que é mais importante: ser amado ou ser respeitado?": "amor versus respeito nas relações",
+  "Se pudesse apagar uma memória, apagaria qual?": "memórias dolorosas que gostariam de esquecer",
+  "Você abriria mão de 5 anos de vida para ser famoso?": "fama e o preço que valeria pagar",
+  "Prefere nunca mentir ou nunca ouvir a verdade?": "honestidade e mentiras na vida",
+  "Se você soubesse que ia morrer amanhã, o que faria hoje?": "prioridades diante da morte iminente",
+  "Você prefere viver 100 anos medíocres ou 50 anos extraordinários?": "qualidade versus quantidade de vida",
+  "O que você faria se descobrisse que tem 1 ano de vida?": "o que faria sabendo que vai morrer em breve",
+  "Você trocaria sua identidade por uma vida completamente diferente?": "identidade pessoal e reinvenção",
+  "O que você faria se acordasse famoso?": "fama repentina e como lidar com ela",
+  "Se você fosse invisível por um dia, o que faria?": "invisibilidade e escolhas sem ser visto",
+  "O que você faria se encontrasse uma mala cheia de dinheiro?": "dinheiro achado e dilemas éticos",
+  "Se você tivesse que viver em uma série de TV, qual escolheria?": "séries favoritas e mundos fictícios",
+  "O que você faria se pudesse falar com animais?": "comunicação com animais e o que perguntaria",
+  "Se você tivesse que sobreviver sozinho em uma ilha, o que levaria?": "sobrevivência e itens essenciais numa ilha",
+  "O que você faria se a IA tomasse seu emprego?": "futuro do trabalho e inteligência artificial",
+  "Se você pudesse ter qualquer empresa do mundo, qual escolheria?": "negócios e empresas mais desejadas",
+  "O que você faria se acordasse no passado com todo seu conhecimento atual?": "voltar ao passado sabendo o que sabe hoje",
+  "Se você fosse presidente por um dia, o que mudaria?": "política e mudanças que faria no poder",
+  "Qual é a mentira que você mais repete?": "mentiras frequentes e autoengano",
+  "Qual é a coisa mais estranha que você acredita?": "crenças incomuns ou conspiratórias",
+  "O que você nunca contou pra ninguém?": "segredos profundos nunca revelados",
+  "Qual é o maior risco que você já correu?": "riscos e aventuras do passado",
+  "O que você faz quando ninguém está olhando?": "comportamentos privados e segredos cotidianos",
+  "Qual é o seu maior vício?": "vícios e hábitos difíceis de largar",
+  "O que você tem vergonha de gostar?": "gostos secretos e guilty pleasures",
+  "Qual é o seu maior orgulho pessoal?": "conquistas e realizações pessoais",
+  "O que te deixa com inveja nos outros?": "inveja e o que admira nos outros",
+  "Qual é a coisa mais infantil que você ainda faz?": "hábitos infantis que ainda mantém",
+};
+
+// Hints por par de facções — descreve o tema sem revelar as palavras
+const FACTION_PAIR_HINTS: Record<string, string> = {
+  "Pizza|Hambúrguer": "dois tipos de comida muito populares",
+  "Café|Chá": "duas bebidas quentes muito consumidas",
+  "Chocolate ao leite|Chocolate amargo": "dois tipos do mesmo alimento doce",
+  "Sushi|Churrasco": "duas culinárias e estilos de comer muito diferentes",
+  "Tapioca|Pão de queijo": "dois lanches tradicionais brasileiros",
+  "Sorvete de creme|Sorvete de chocolate": "dois sabores de uma sobremesa gelada",
+  "Brigadeiro|Beijinho": "dois doces clássicos de festas brasileiras",
+  "Lasanha|Macarrão": "dois tipos de massa da culinária italiana",
+  "Gato|Cachorro": "dois animais domésticos muito populares",
+  "Leão|Tigre": "dois grandes felinos predadores",
+  "Tubarão|Baleia": "dois animais marinhos de grande porte",
+  "Águia|Coruja": "duas aves conhecidas e muito simbólicas",
+  "Praia|Montanha": "dois destinos naturais de férias",
+  "Verão|Inverno": "duas estações opostas do ano",
+  "Cidade grande|Interior": "dois estilos de vida e moradia",
+  "Dia|Noite": "dois períodos opostos de 24 horas",
+  "Madrugador|Coruja noturna": "dois hábitos opostos de sono e rotina",
+  "Casa|Apartamento": "dois tipos de moradia urbana",
+  "Campo|Mar": "dois ambientes naturais de lazer",
+  "Batman|Superman": "dois super-heróis icônicos da DC Comics",
+  "Harry Potter|Senhor dos Anéis": "duas franquias épicas de fantasia",
+  "Marvel|DC": "duas grandes editoras e universos de super-heróis",
+  "Star Wars|Star Trek": "duas franquias gigantes de ficção científica espacial",
+  "PlayStation|Xbox": "dois consoles rivais de videogame",
+  "Android|iPhone": "dois sistemas operacionais de celular rivais",
+  "Introvertido|Extrovertido": "dois tipos opostos de personalidade social",
+  "Organizado|Bagunçado": "dois estilos opostos de organização",
+  "Racional|Emocional": "duas formas opostas de tomar decisões",
+  "Planejador|Improvisador": "dois estilos opostos de lidar com o futuro",
+  "Aventureiro|Caseiro": "dois estilos de vida opostos",
+  "Filme|Série": "dois formatos de entretenimento audiovisual",
+  "Cinema|Netflix": "dois jeitos de assistir filmes e séries",
+  "Livro|Audiobook": "dois formatos de consumir literatura",
+  "Rock|Pop": "dois gêneros musicais muito populares",
+  "Funk|Sertanejo": "dois gêneros musicais brasileiros muito populares",
+  "Futebol|Basquete": "dois esportes coletivos muito populares",
+  "RPG|FPS": "dois gêneros de videogame muito jogados",
+  "Vampiro|Lobisomem": "duas criaturas sobrenaturais clássicas do folclore",
+  "Fada|Bruxa": "dois personagens femininos de contos de fada",
+  "Robô|Alienígena": "dois seres fictícios da ficção científica",
+  "Ninja|Samurai": "dois guerreiros icônicos da cultura japonesa",
+  "Viking|Pirata": "dois guerreiros aventureiros históricos",
+};
+
 export function getHintForMode(mode: GameMode, secretInfo: unknown): string {
   switch (mode) {
     case "secret-word": {
       const info = secretInfo as { word: string };
-      const word = info.word;
-      const firstLetter = word[0].toUpperCase();
-      const length = word.length;
-      return `A palavra tem ${length} letras e começa com "${firstLetter}"`;
+      const hint = WORD_HINTS[info.word];
+      return hint
+        ? `A palavra é algo relacionado a ${hint}`
+        : `A palavra começa com "${info.word[0].toUpperCase()}" e tem ${info.word.length} letras`;
     }
     case "location-role": {
       const info = secretInfo as { location: string };
@@ -473,20 +729,26 @@ export function getHintForMode(mode: GameMode, secretInfo: unknown): string {
     }
     case "question": {
       const info = secretInfo as { question: string };
-      const words = info.question.split(" ");
-      const firstTwoWords = words.slice(0, 2).join(" ");
-      return `A pergunta começa com "${firstTwoWords}..."`;
+      const hint = QUESTION_HINTS[info.question];
+      return hint
+        ? `A pergunta é sobre ${hint}`
+        : `A pergunta é sobre preferências ou experiências pessoais`;
     }
     case "two-factions": {
-      return `Existem duas palavras relacionadas entre si. Tente uma resposta vaga que sirva para as duas.`;
+      const info = secretInfo as { words: string[] };
+      const key = `${info.words[0]}|${info.words[1]}`;
+      const hint = FACTION_PAIR_HINTS[key];
+      return hint
+        ? `Os times têm palavras de tema: ${hint}`
+        : `Existem dois times com palavras relacionadas entre si`;
     }
     case "category-item": {
       const info = secretInfo as { category: string };
-      return `A categoria é "${info.category}"`;
+      return `Todos os itens do jogo pertencem à categoria "${info.category}"`;
     }
     case "movie-series": {
       const info = secretInfo as { genre: string; year: number };
-      return `É do gênero ${info.genre}${info.year ? `, lançado em ${info.year}` : ""}`;
+      return `A obra é do gênero ${info.genre}${info.year ? `, lançada em ${info.year}` : ""}`;
     }
     default:
       return "Observe com atenção as respostas dos outros jogadores!";
@@ -495,36 +757,36 @@ export function getHintForMode(mode: GameMode, secretInfo: unknown): string {
 
 function getLocationHint(location: string): string {
   const hints: Record<string, string> = {
-    Hospital: "um estabelecimento de saúde",
-    Aeroporto: "um terminal de transporte aéreo",
-    "Escola de Magia": "uma instituição de ensino incomum",
-    "Nave Espacial": "um veículo fora da atmosfera terrestre",
-    "Restaurante Japonês": "um estabelecimento gastronômico asiático",
-    "Delegacia de Polícia": "um órgão de segurança pública",
-    "Parque de Diversões": "um local de lazer e entretenimento",
-    Cinema: "um espaço de exibição de filmes",
-    "Quartel de Bombeiros": "uma unidade de serviço de emergência",
-    "Escola de Culinária": "uma instituição de ensino gastronômico",
-    "Estação Espacial": "uma estrutura orbital habitável",
-    Cassino: "um local de jogos e apostas",
-    "Navio de Cruzeiro": "um grande navio de viagens de lazer",
-    "Academia de Artes Marciais": "um dojo de treinamento de combate",
-    "Laboratório Secreto": "uma instalação de pesquisa sigilosa",
-    Circo: "um espetáculo itinerante de entretenimento",
-    "Delegacia Futurista": "um órgão policial tecnológico",
-    Fazenda: "uma propriedade rural de produção",
-    "Estúdio de Gravação": "um ambiente profissional de produção musical",
-    "Museu de Arte": "um espaço de exposição cultural",
-    "Mansão Assombrada": "uma residência misteriosa e assombrada",
-    Supermercado: "um grande estabelecimento comercial de alimentos",
-    Teatro: "um espaço de apresentações artísticas ao vivo",
-    "Trem Noturno": "um transporte ferroviário com viagem longa",
-    Zoológico: "um parque com animais de diversas espécies",
-    "Plataforma de Petróleo": "uma instalação offshore de extração",
-    "Escola de Espionagem": "uma agência de treinamento de espiões",
-    Praia: "um local litorâneo de lazer",
-    "Hospital Psiquiátrico": "uma clínica de saúde mental",
-    "Estação Antártica": "uma base de pesquisa em clima extremo",
+    Hospital: "um local de saúde onde médicos e pacientes convivem",
+    Aeroporto: "um terminal onde aviões chegam e partem com passageiros",
+    "Escola de Magia": "uma instituição de ensino com magia e feitiços",
+    "Nave Espacial": "um veículo que viaja pelo espaço sideral",
+    "Restaurante Japonês": "um restaurante especializado em culinária japonesa",
+    "Delegacia de Polícia": "um órgão de segurança pública com policiais e suspeitos",
+    "Parque de Diversões": "um parque de lazer com brinquedos e atrações",
+    Cinema: "um local de entretenimento para assistir filmes",
+    "Quartel de Bombeiros": "uma base de bombeiros prontos para emergências",
+    "Escola de Culinária": "uma escola onde se aprende a cozinhar profissionalmente",
+    "Estação Espacial": "uma estrutura habitável em órbita no espaço",
+    Cassino: "um local de jogos de azar e apostas",
+    "Navio de Cruzeiro": "um navio gigante de viagens e lazer pelo mar",
+    "Academia de Artes Marciais": "um local de treinamento de luta e disciplina",
+    "Laboratório Secreto": "uma instalação sigilosa de pesquisa científica",
+    Circo: "um espetáculo com acrobacias, palhaços e animais",
+    "Delegacia Futurista": "uma delegacia policial com tecnologia avançada",
+    Fazenda: "uma propriedade rural com animais e plantações",
+    "Estúdio de Gravação": "um local profissional para gravar músicas",
+    "Museu de Arte": "um espaço cultural com obras de arte expostas",
+    "Mansão Assombrada": "uma mansão misteriosa com fantasmas e segredos",
+    Supermercado: "um grande mercado onde se compra alimentos e produtos",
+    Teatro: "um espaço de apresentações ao vivo com atores",
+    "Trem Noturno": "um trem em viagem longa durante a noite",
+    Zoológico: "um parque onde animais selvagens ficam em cativeiro",
+    "Plataforma de Petróleo": "uma estrutura no mar para extrair petróleo",
+    "Escola de Espionagem": "uma agência secreta que treina espiões",
+    Praia: "um litoral com areia, mar e sol para lazer",
+    "Hospital Psiquiátrico": "uma clínica especializada em saúde mental",
+    "Estação Antártica": "uma base científica no polo sul gelado",
   };
-  return hints[location] ?? "um local público conhecido";
+  return hints[location] ?? "um local público com várias pessoas e funções";
 }
