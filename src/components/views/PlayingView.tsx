@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import type { PublicRoom, PlayerPrivateInfo } from "@/types/game";
 import { PrivateInfoCard } from "../PrivateInfoCard";
 import { modeLabels, ModeIcon } from "../ModeIcon";
@@ -19,6 +20,23 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
   const currentPlayer = state.players.find((p) => p.id === currentPlayerId);
   const isMyTurn = currentPlayerId === myId;
   const isHost = room.hostId === myId;
+
+  const [waiting, setWaiting] = useState(false);
+
+  // Reset when server confirms the turn advanced
+  useEffect(() => { setWaiting(false); }, [state.currentTurn, state.roundNumber, state.phase]);
+
+  // Safety fallback: re-enable after 4s in case event was dropped
+  useEffect(() => {
+    if (!waiting) return;
+    const t = setTimeout(() => setWaiting(false), 4000);
+    return () => clearTimeout(t);
+  }, [waiting]);
+
+  const handleNextTurn = () => {
+    setWaiting(true);
+    onNextTurn();
+  };
 
   const totalRounds = state.settings.rounds ?? 1;
   const isMultiRound = totalRounds > 1;
@@ -58,10 +76,12 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
 
         {isMyTurn && (
           <button
-            onClick={onNextTurn}
+            onClick={handleNextTurn}
+            disabled={waiting}
             className="btn-primary w-full mt-4"
+            style={{ opacity: waiting ? 0.6 : 1 }}
           >
-            Passei minha vez
+            {waiting ? "Aguardando..." : "Passei minha vez"}
           </button>
         )}
       </div>
