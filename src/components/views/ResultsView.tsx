@@ -57,6 +57,38 @@ export function ResultsView({ room, myId, privateInfo, voteResults, onPlayAgain,
         />
       </div>
 
+      {voteResults && Object.keys(voteResults.votes).length > 0 && (
+        <div className="card p-4">
+          <p className="font-semibold text-sm mb-3">Quem votou em quem</p>
+          <div className="space-y-2">
+            {Object.entries(voteResults.votes).map(([voterId, targetId]) => {
+              const voter = room.state.players.find((p) => p.id === voterId);
+              const target = room.state.players.find((p) => p.id === targetId);
+              if (!voter || !target) return null;
+              const isMe = voterId === myId;
+              return (
+                <div
+                  key={voterId}
+                  className="flex items-center justify-between text-sm px-2 py-1.5 rounded-lg"
+                  style={{ background: isMe ? "rgba(124,58,237,0.1)" : "rgba(255,255,255,0.04)" }}
+                >
+                  <span className="font-medium" style={{ color: isMe ? "var(--accent-light)" : undefined }}>
+                    {voter.name}{isMe ? " (você)" : ""}
+                  </span>
+                  <span className="opacity-40 mx-2">→</span>
+                  <span
+                    className="font-medium"
+                    style={{ color: impostors.includes(targetId) ? "var(--danger)" : undefined }}
+                  >
+                    {target.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {privateInfo && (
         <div className="card p-4">
           <p className="font-semibold text-sm mb-3">Suas informações eram:</p>

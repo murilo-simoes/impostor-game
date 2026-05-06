@@ -231,11 +231,13 @@ export function startGame(room: Room, settings: GameSettings): void {
 
   const { privateInfo, secret } = generatePrivateInfo(settings.mode, playerIds, impostorIds, settings);
 
-  for (const impostorId of impostorIds) {
-    privateInfo[impostorId].hint = getHintForMode(settings.mode, secret);
-  }
-
   const turnOrder = shuffle(playerIds);
+
+  // Only the impostor who speaks first gets the hint
+  const firstImpostor = turnOrder.find(id => impostorIds.includes(id));
+  if (firstImpostor) {
+    privateInfo[firstImpostor].hint = getHintForMode(settings.mode, secret);
+  }
 
   room.state = {
     ...room.state,

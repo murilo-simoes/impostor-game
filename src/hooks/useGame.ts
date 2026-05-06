@@ -32,7 +32,15 @@ function reducer(state: GameClientState, action: Action): GameClientState {
     case "CONNECTED": return { ...state, connected: true };
     case "DISCONNECTED": return { ...state, connected: false };
     case "JOINED": return { ...state, myId: action.myId };
-    case "ROOM_UPDATED": return { ...state, room: action.room, error: null };
+    case "ROOM_UPDATED": {
+      const newGame = action.room.state.phase === "playing" && state.room?.state.phase !== "playing";
+      return {
+        ...state,
+        room: action.room,
+        error: null,
+        ...(newGame ? { castVotes: {}, voteResults: null } : {}),
+      };
+    }
     case "PRIVATE_INFO": return { ...state, privateInfo: action.info };
     case "VOTE_CAST": return { ...state, castVotes: { ...state.castVotes, [action.voterId]: action.targetId } };
     case "VOTE_RESULTS": return { ...state, voteResults: action.results };
