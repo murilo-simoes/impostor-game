@@ -4,6 +4,7 @@ import {
   GameSettings,
   GameState,
   Player,
+  PlayerInfo,
   PlayerPrivateInfo,
   Room,
   VoteResults,
@@ -308,19 +309,19 @@ export function resolveVotes(room: Room): VoteResults {
 
   // Reveal secrets from non-impostor players (two per faction for two-factions mode)
   const nonImpostors = room.state.players.filter(p => !room.state.impostors.includes(p.id));
-  let revealedSecrets: import("./gameData").PlayerInfo[] = [];
+  let revealedSecrets: PlayerInfo[] = [];
   if (room.state.settings.mode === "two-factions") {
     const seen = new Set<string>();
     for (const p of nonImpostors) {
       const info = room.privateInfo[p.id]?.info;
       if (info && "faction" in info && info.faction && !seen.has(info.faction)) {
-        revealedSecrets.push(info as import("./gameData").PlayerInfo);
+        revealedSecrets.push(info as PlayerInfo);
         seen.add(info.faction);
       }
     }
   } else {
     const info = nonImpostors[0] ? room.privateInfo[nonImpostors[0].id]?.info : null;
-    if (info) revealedSecrets = [info as import("./gameData").PlayerInfo];
+    if (info) revealedSecrets = [info as PlayerInfo];
   }
 
   room.state.phase = "results";
