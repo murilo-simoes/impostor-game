@@ -149,9 +149,9 @@ export function PrivateInfoCard({ privateInfo }: { privateInfo: PlayerPrivateInf
             style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)" }}
           >
             <p className="font-semibold mb-1" style={{ color: "var(--warning)" }}>
-              Dica (caso você fale primeiro)
+              Sua dica (caso você fale primeiro)
             </p>
-            <p className="opacity-80">{privateInfo.hint}</p>
+            <p className="text-2xl font-bold tracking-wide" style={{ color: "var(--warning)" }}>{privateInfo.hint}</p>
           </div>
         )}
       </div>

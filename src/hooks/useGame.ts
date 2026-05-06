@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useReducer, useCallback } from "react";
-import { getSocket } from "@/lib/socket";
+import { getSocket, getPlayerId } from "@/lib/socket";
 import type { PublicRoom, PlayerPrivateInfo, VoteResults } from "@/types/game";
 
 interface GameClientState {
@@ -24,7 +24,8 @@ type Action =
   | { type: "VOTE_RESULTS"; results: VoteResults }
   | { type: "ERROR"; message: string }
   | { type: "CLEAR_ERROR" }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "LEAVE" };
 
 function reducer(state: GameClientState, action: Action): GameClientState {
   switch (action.type) {
@@ -38,6 +39,7 @@ function reducer(state: GameClientState, action: Action): GameClientState {
     case "ERROR": return { ...state, error: action.message };
     case "CLEAR_ERROR": return { ...state, error: null };
     case "RESET": return { ...state, privateInfo: null, voteResults: null, castVotes: {} };
+    case "LEAVE": return { ...initial };
     default: return state;
   }
 }
@@ -55,18 +57,48 @@ const initial: GameClientState = {
 export function useGame() {
   const [state, dispatch] = useReducer(reducer, initial);
   const socketRef = useRef(getSocket());
+  const roomCodeRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (state.room?.code) {
+      roomCodeRef.current = state.room.code;
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("impostorRoomCode", state.room.code);
+      }
+    }
+  }, [state.room?.code]);
 
   useEffect(() => {
     const socket = socketRef.current;
 
-    socket.on("connect", () => dispatch({ type: "CONNECTED" }));
+    socket.on("connect", () => {
+      dispatch({ type: "CONNECTED" });
+
+      const savedCode =
+        roomCodeRef.current ??
+        (typeof window !== "undefined" ? sessionStorage.getItem("impostorRoomCode") : null);
+      const persistentId = getPlayerId();
+
+      if (savedCode && persistentId) {
+        socket.emit("player:rejoin", persistentId, savedCode, (success, room, privateInfo) => {
+          if (success && room) {
+            dispatch({ type: "JOINED", myId: persistentId });
+            dispatch({ type: "ROOM_UPDATED", room });
+            if (privateInfo) dispatch({ type: "PRIVATE_INFO", info: privateInfo });
+          } else {
+            if (typeof window !== "undefined") {
+              sessionStorage.removeItem("impostorRoomCode");
+            }
+          }
+        });
+      }
+    });
+
     socket.on("disconnect", () => dispatch({ type: "DISCONNECTED" }));
     socket.on("room:updated", (room) => dispatch({ type: "ROOM_UPDATED", room }));
     socket.on("game:private-info", (info) => dispatch({ type: "PRIVATE_INFO", info }));
     socket.on("vote:cast", (voterId, targetId) => dispatch({ type: "VOTE_CAST", voterId, targetId }));
-    socket.on("vote:results", (results) => {
-      dispatch({ type: "VOTE_RESULTS", results });
-    });
+    socket.on("vote:results", (results) => dispatch({ type: "VOTE_RESULTS", results }));
     socket.on("error", (msg) => dispatch({ type: "ERROR", message: msg }));
 
     return () => {
@@ -81,14 +113,15 @@ export function useGame() {
   }, []);
 
   const createRoom = useCallback((playerName: string) => {
-    socketRef.current.emit("room:create", playerName, (code, playerId) => {
+    const persistentId = getPlayerId();
+    socketRef.current.emit("room:create", playerName, persistentId, (code, playerId) => {
       dispatch({ type: "JOINED", myId: playerId });
-      // room:updated will follow
     });
   }, []);
 
   const joinRoom = useCallback((code: string, playerName: string, onError?: (msg: string) => void) => {
-    socketRef.current.emit("room:join", code, playerName, (success, error, playerId) => {
+    const persistentId = getPlayerId();
+    socketRef.current.emit("room:join", code, playerName, persistentId, (success, error, playerId) => {
       if (!success || !playerId) {
         onError?.(error ?? "Erro ao entrar na sala");
         return;
@@ -99,7 +132,11 @@ export function useGame() {
 
   const leaveRoom = useCallback(() => {
     socketRef.current.emit("room:leave");
-    dispatch({ type: "RESET" });
+    roomCodeRef.current = null;
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("impostorRoomCode");
+    }
+    dispatch({ type: "LEAVE" });
   }, []);
 
   const startGame = useCallback((settings: import("@/types/game").GameSettings) => {

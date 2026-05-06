@@ -111,13 +111,14 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  "room:create": (playerName: string, callback: (code: string, playerId: string) => void) => void;
-  "room:join": (code: string, playerName: string, callback: (success: boolean, error?: string, playerId?: string) => void) => void;
+  "room:create": (playerName: string, persistentId: string, callback: (code: string, playerId: string) => void) => void;
+  "room:join": (code: string, playerName: string, persistentId: string, callback: (success: boolean, error?: string, playerId?: string) => void) => void;
   "room:leave": () => void;
   "game:start": (settings: GameSettings) => void;
   "game:next-turn": () => void;
   "vote:cast": (targetId: string) => void;
   "game:restart": () => void;
+  "player:rejoin": (persistentId: string, roomCode: string, callback: (success: boolean, room?: PublicRoom, privateInfo?: PlayerPrivateInfo | null) => void) => void;
 }
 
 export interface PublicRoom {

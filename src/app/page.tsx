@@ -55,7 +55,7 @@ function HomeContent() {
 
   const myVote = game.myId ? game.castVotes[game.myId] ?? null : null;
 
-  if (screen === "game" && game.room) {
+  if (game.room) {
     const { room, myId, privateInfo, castVotes, voteResults } = game;
     const phase = room.state.phase;
 

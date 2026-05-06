@@ -56,12 +56,12 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
           )}
         </div>
 
-        {(isMyTurn || isHost) && (
+        {isMyTurn && (
           <button
             onClick={onNextTurn}
             className="btn-primary w-full mt-4"
           >
-            {isMyTurn ? "Passei minha vez" : "Próximo jogador"}
+            Passei minha vez
           </button>
         )}
       </div>
