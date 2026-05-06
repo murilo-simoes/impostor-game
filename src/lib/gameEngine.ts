@@ -176,7 +176,7 @@ function generatePrivateInfo(
           role: isImpostor ? "impostor" : "player",
           info: {
             mode,
-            category,
+            category: isImpostor ? null : category,
             item: isImpostor ? null : (items[itemIndex++] ?? items[0]),
           },
         };
