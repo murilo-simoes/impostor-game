@@ -10,9 +10,10 @@ interface Props {
   myId: string;
   privateInfo: PlayerPrivateInfo | null;
   onNextTurn: () => void;
+  onHostSkip: () => void;
 }
 
-export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
+export function PlayingView({ room, myId, privateInfo, onNextTurn, onHostSkip }: Props) {
   const { state } = room;
   const activePlayers = state.players.filter((p) => !p.isEliminated);
   const activeOrder = state.turnOrder.filter((id) => activePlayers.some((p) => p.id === id));
@@ -82,6 +83,15 @@ export function PlayingView({ room, myId, privateInfo, onNextTurn }: Props) {
             style={{ opacity: waiting ? 0.6 : 1 }}
           >
             {waiting ? "Aguardando..." : "Passei minha vez"}
+          </button>
+        )}
+        {isHost && !isMyTurn && (
+          <button
+            onClick={onHostSkip}
+            className="w-full mt-4 py-2 rounded-xl text-sm font-medium transition-opacity hover:opacity-80"
+            style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
+          >
+            Pular vez de {currentPlayer?.name}
           </button>
         )}
       </div>

@@ -156,6 +156,10 @@ export function useGame() {
     socketRef.current.emit("game:next-turn");
   }, []);
 
+  const hostSkipTurn = useCallback(() => {
+    socketRef.current.emit("game:host-skip-turn");
+  }, []);
+
   const castVote = useCallback((targetId: string) => {
     socketRef.current.emit("vote:cast", targetId);
   }, []);
@@ -174,6 +178,7 @@ export function useGame() {
     leaveRoom,
     startGame,
     nextTurn,
+    hostSkipTurn,
     castVote,
     restartGame,
     clearError,

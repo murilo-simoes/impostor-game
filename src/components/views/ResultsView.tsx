@@ -20,6 +20,7 @@ export function ResultsView({ room, myId, privateInfo, voteResults, onPlayAgain,
     ? room.state.players.find((p) => p.id === voteResults.eliminated)
     : null;
   const impostors = voteResults?.impostors ?? [];
+  const revealedSecrets = voteResults?.revealedSecrets ?? [];
 
   return (
     <div className="space-y-4 fade-in">
@@ -86,6 +87,41 @@ export function ResultsView({ room, myId, privateInfo, voteResults, onPlayAgain,
               );
             })}
           </div>
+        </div>
+      )}
+
+      {revealedSecrets.length > 0 && (
+        <div className="card p-4 text-center">
+          <p className="text-sm opacity-50 mb-2">
+            {revealedSecrets[0].mode === "secret-word" && "A palavra secreta era"}
+            {revealedSecrets[0].mode === "location-role" && "O local era"}
+            {revealedSecrets[0].mode === "question" && "A pergunta era"}
+            {revealedSecrets[0].mode === "two-factions" && "As palavras eram"}
+            {revealedSecrets[0].mode === "category-item" && "A categoria era"}
+            {revealedSecrets[0].mode === "movie-series" && "A obra era"}
+          </p>
+          {revealedSecrets[0].mode === "two-factions" ? (
+            <div className="flex justify-center gap-8">
+              {revealedSecrets.map((s, i) => (
+                "word" in s && s.word ? (
+                  <div key={i} className="text-center">
+                    {"faction" in s && s.faction && (
+                      <p className="text-xs opacity-50 mb-1">Grupo {s.faction}</p>
+                    )}
+                    <p className="text-3xl font-bold" style={{ color: "var(--accent-light)" }}>{s.word}</p>
+                  </div>
+                ) : null
+              ))}
+            </div>
+          ) : (
+            <p className="text-3xl font-bold" style={{ color: "var(--accent-light)" }}>
+              {"word" in revealedSecrets[0] && revealedSecrets[0].word}
+              {"location" in revealedSecrets[0] && revealedSecrets[0].location}
+              {"question" in revealedSecrets[0] && `"${revealedSecrets[0].question}"`}
+              {"category" in revealedSecrets[0] && revealedSecrets[0].category}
+              {"title" in revealedSecrets[0] && revealedSecrets[0].title}
+            </p>
+          )}
         </div>
       )}
 

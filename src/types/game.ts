@@ -116,6 +116,7 @@ export interface ClientToServerEvents {
   "room:leave": () => void;
   "game:start": (settings: GameSettings) => void;
   "game:next-turn": () => void;
+  "game:host-skip-turn": () => void;
   "vote:cast": (targetId: string) => void;
   "game:restart": () => void;
   "player:rejoin": (persistentId: string, roomCode: string, callback: (success: boolean, room?: PublicRoom, privateInfo?: PlayerPrivateInfo | null) => void) => void;
@@ -133,4 +134,5 @@ export interface VoteResults {
   eliminated: string | null;
   impostors: string[];
   impostorsCaught: boolean;
+  revealedSecrets: PlayerInfo[];
 }

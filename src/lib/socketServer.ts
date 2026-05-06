@@ -184,6 +184,16 @@ export function initSocketServer(io: SocketIOServer<ClientToServerEvents, Server
       }
     });
 
+    socket.on("game:host-skip-turn", () => {
+      const room = getMyRoom();
+      const persistentId = getMyPersistentId();
+      if (!room || !persistentId || room.hostId !== persistentId) return;
+      if (room.state.phase !== "playing") return;
+
+      advanceTurn(room);
+      broadcastRoom(room);
+    });
+
     socket.on("game:restart", () => {
       const room = getMyRoom();
       const persistentId = getMyPersistentId();

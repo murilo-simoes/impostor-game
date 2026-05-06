@@ -91,7 +91,7 @@ function HomeContent() {
           <LobbyView room={room} myId={myId!} onStart={(s: GameSettings) => game.startGame(s)} onLeave={handleLeave} />
         )}
         {phase === "playing" && (
-          <PlayingView room={room} myId={myId!} privateInfo={privateInfo} onNextTurn={game.nextTurn} />
+          <PlayingView room={room} myId={myId!} privateInfo={privateInfo} onNextTurn={game.nextTurn} onHostSkip={game.hostSkipTurn} />
         )}
         {phase === "voting" && (
           <VotingView
