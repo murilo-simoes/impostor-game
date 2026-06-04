@@ -49,7 +49,7 @@ export interface TwoFactionsInfo {
 
 export interface CategoryItemInfo {
   mode: "category-item";
-  category: string;
+  category: string | null; // null for impostor
   item: string | null; // null for impostor
 }
 
